@@ -10,7 +10,7 @@ pub trait Auth<'a> {
     fn get_auth(&self, access_token: &'a str) -> Result<GetAuthResponse, Error>;
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Serialize)]
 pub struct GetAuthRequestOptions {
     account_ids: Vec<String>,
 }
