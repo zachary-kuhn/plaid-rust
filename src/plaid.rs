@@ -22,7 +22,7 @@ pub struct Error {
 }
 
 impl Error {
-    fn new(kind: Kind) -> Error {
+    pub fn new(kind: Kind) -> Error {
         Error {
             inner: Box::new(Inner { kind }),
         }
@@ -36,6 +36,7 @@ struct Inner {
 pub(crate) enum Kind {
     Reqwest(::reqwest::Error),
     Json(::serde_json::Error),
+    EmptyToken,
 }
 
 pub struct Client {
