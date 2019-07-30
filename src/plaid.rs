@@ -1,5 +1,4 @@
 use reqwest::Request;
-use serde::Deserialize;
 
 pub enum Environment {
     SANDBOX,
@@ -8,7 +7,7 @@ pub enum Environment {
 }
 
 impl Environment {
-    pub fn host(&self) -> &'static str {
+    pub fn host(&self) -> &str {
         match self {
             Environment::SANDBOX => "sandbox.plaid.com",
             Environment::DEVELOPMENT => "development.plaid.com",
@@ -22,7 +21,7 @@ pub struct Error {
 }
 
 impl Error {
-    pub fn new(kind: Kind) -> Error {
+    pub(crate) fn new(kind: Kind) -> Error {
         Error {
             inner: Box::new(Inner { kind }),
         }
@@ -39,16 +38,16 @@ pub(crate) enum Kind {
     EmptyToken,
 }
 
-pub struct Client {
-    pub client_id: &'static str,
-    pub secret: &'static str,
-    pub public_key: &'static str,
+pub struct Client<'a> {
+    pub client_id: &'a str,
+    pub secret: &'a str,
+    pub public_key: &'a str,
     pub environment: Environment,
     pub http_client: reqwest::Client,
 }
 
-impl Client {
-    pub fn call<T>(&self, endpoint: &str, body: &'static str) -> Result<T, Error>
+impl<'a> Client<'a> {
+    pub fn call<T>(&self, endpoint: &str, body: &str) -> Result<T, Error>
     where
         for<'de> T: serde::de::Deserialize<'de>,
     {
@@ -57,7 +56,7 @@ impl Client {
         request.and_then(|req| self.execute_request::<T>(req))
     }
 
-    fn new_request(&self, endpoint: &str, body: &'static str) -> Result<Request, Error> {
+    fn new_request(&self, endpoint: &str, body: &str) -> Result<Request, Error> {
         let mut path = endpoint.to_string();
 
         if !endpoint.starts_with("/") {
@@ -71,7 +70,7 @@ impl Client {
         let request = self
             .http_client
             .post(url.as_str())
-            .body(body)
+            .body(body.to_string())
             .header("Content-Type", "application/json")
             .header("User-Agent", "Plaid Rust v0.0.1")
             .header("Plaid-Version", "2019-05-29");

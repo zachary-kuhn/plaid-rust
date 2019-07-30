@@ -1,60 +1,61 @@
-use crate::plaid::Client;
-use crate::plaid::Error;
-use serde::Deserialize;
+use crate::plaid::{Client, Error, Kind};
+use serde::{Deserialize, Serialize};
 
-pub trait Auth {
-    fn getAuthWithOptions(
+pub trait Auth<'a> {
+    fn get_auth_with_options(
         &self,
-        access_token: &'static str,
+        access_token: &'a str,
         options: GetAuthRequestOptions,
-    ) -> Result<GetAuthRequest, Error>;
-    fn getAuth(&self, access_token: &'static str) -> Result<GetAuthRequest, Error>;
+    ) -> Result<GetAuthResponse, Error>;
+    fn get_auth(&self, access_token: &'a str) -> Result<GetAuthResponse, Error>;
 }
 
-#[derive(Deserialize)]
-struct GetAuthRequestOptions {
-    account_ids: Vec<str>,
+#[derive(Deserialize, Serialize)]
+pub struct GetAuthRequestOptions {
+    account_ids: Vec<String>,
 }
 
-struct GetAuthRequest {
-    client_id: &'static str,
-    secret: &'static str,
-    access_token: &'static str,
+#[derive(Serialize)]
+pub struct GetAuthRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    access_token: &'a str,
     options: GetAuthRequestOptions,
 }
 
-struct GetAuthResponse {
-    request_id: str,
-    accounts: Vec<str>,
-    numbers: Vec<str>,
+#[derive(Deserialize)]
+pub struct GetAuthResponse {
+    request_id: String,
+    accounts: Vec<String>,
+    numbers: Vec<String>,
 }
 
-impl Auth for Client {
-    fn getAuthWithOptions(
+impl<'a> Auth<'a> for Client<'a> {
+    fn get_auth_with_options(
         &self,
-        access_token: &'static str,
+        access_token: &str,
         options: GetAuthRequestOptions,
     ) -> Result<GetAuthResponse, Error> {
         if access_token == "" {
             return Err(Error::new(Kind::EmptyToken));
         }
 
-        req = GetAuthRequest {
+        let req = GetAuthRequest {
             client_id: self.client_id,
             secret: self.secret,
-            access_token: self.access_token,
+            access_token,
             options: GetAuthRequestOptions {
                 account_ids: options.account_ids,
             },
         };
 
-        serde_json::to_string(req)
+        serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
-            .map(|json_body| self.call("/auth/get", &json_body))
+            .and_then(|json_body| self.call("/auth/get", &json_body))
     }
 
-    fn getAuth(&self, access_token: &'static str) -> Result<GetAuthResponse, Error> {
-        self.getAuthWithOptions(
+    fn get_auth(&self, access_token: &str) -> Result<GetAuthResponse, Error> {
+        self.get_auth_with_options(
             access_token,
             GetAuthRequestOptions {
                 account_ids: vec![],
