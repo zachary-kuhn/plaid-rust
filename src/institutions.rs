@@ -79,17 +79,17 @@ struct GetInstitutionsRequest<'a> {
     count: u16,
     offset: u32,
     #[serde(skip_serializing_if = "Option::is_none")]
-    options: Option<GetInstitutionsRequestOptions>,
+    options: Option<GetInstitutionsRequestOptions<'a>>,
 }
 
 #[derive(Serialize)]
-pub struct GetInstitutionsRequestOptions {
+pub struct GetInstitutionsRequestOptions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    products: Option<Vec<String>>,
+    products: Option<Vec<&'a str>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     include_optional_metadata: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    country_codes: Option<Vec<String>>,
+    country_codes: Option<Vec<&'a str>>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -103,13 +103,16 @@ pub struct GetInstitutionsResponse {
 struct GetInstitutionByIdRequest<'a> {
     institution_id: &'a str,
     public_key: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
     options: Option<GetInstitutionByIdRequestOptions>,
 }
 
 #[derive(Serialize)]
 pub struct GetInstitutionByIdRequestOptions {
-    include_optional_metadata: bool,
-    include_status: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    include_optional_metadata: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    include_status: Option<bool>,
 }
 
 #[derive(Deserialize)]
@@ -123,13 +126,16 @@ struct SearchInstitutionsRequest<'a> {
     query: &'a str,
     products: Vec<&'a str>,
     public_key: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
     options: Option<SearchInstitutionsRequestOptions<'a>>,
 }
 
 #[derive(Serialize)]
 pub struct SearchInstitutionsRequestOptions<'a> {
-    include_optional_metadata: bool,
-    country_codes: Vec<&'a str>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    include_optional_metadata: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    country_codes: Option<Vec<&'a str>>,
 }
 
 #[derive(Deserialize)]
