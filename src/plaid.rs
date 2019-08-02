@@ -39,6 +39,7 @@ pub(crate) enum Kind {
     Reqwest(::reqwest::Error),
     Json(::serde_json::Error),
     EmptyToken,
+    EmptyId,
 }
 
 pub struct Client<'a> {

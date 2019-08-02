@@ -4,13 +4,19 @@ use serde::Deserialize;
 use serde::*;
 
 pub trait Institutions<'a> {
+    fn get_institutions(&self, count: u16, offset: u32) -> Result<GetInstitutionsResponse, Error>;
     fn get_institutions_with_options(
         &self,
         count: u16,
         offset: u32,
         options: Option<GetInstitutionsRequestOptions>,
     ) -> Result<GetInstitutionsResponse, Error>;
-    fn get_institutions(&self, count: u16, offset: u32) -> Result<GetInstitutionsResponse, Error>;
+    fn get_institution_by_id(&self, id: &str) -> Result<GetInstutionResponse, Error>;
+    fn get_institution_by_id_with_options(
+        &self,
+        id: &str,
+        options: Option<GetInstitutionByIdRequestOptions>,
+    ) -> Result<GetInstutionResponse, Error>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -82,7 +88,28 @@ pub struct GetInstitutionsResponse {
     total: u32,
 }
 
+#[derive(Serialize)]
+struct GetInstitutionByIdRequest<'a> {
+    institution_id: &'a str,
+    public_key: &'a str,
+    options: Option<GetInstitutionByIdRequestOptions>,
+}
+
+struct GetInstitutionByIdRequestOptions {
+    include_optional_metadata: bool,
+    include_status: bool,
+}
+
+struct GetInstitutionByIdResponse {
+    request_id: String,
+    institution: Institution,
+}
+
 impl<'a> Institutions<'a> for Client<'a> {
+    fn get_institutions(&self, count: u16, offset: u32) -> Result<GetInstitutionsResponse, Error> {
+        self.get_institutions_with_options(count, offset, None)
+    }
+
     fn get_institutions_with_options(
         &self,
         count: u16,
@@ -107,7 +134,27 @@ impl<'a> Institutions<'a> for Client<'a> {
             .and_then(|json_body| self.call("/institutions/get", &json_body))
     }
 
-    fn get_institutions(&self, count: u16, offset: u32) -> Result<GetInstitutionsResponse, Error> {
-        self.get_institutions_with_options(count, offset, None)
+    fn get_institution_by_id(&self, id: &str) -> Result<GetInstitutionByIdResponse, Error> {
+        self.get_institution_by_id_with_options(id, None)
+    }
+
+    fn get_institution_by_id_with_options(
+        &self,
+        id: &str,
+        options: Option<GetInstitutionByIdRequestOptions>,
+    ) -> Result<GetInstitutionByIdResponse, Error> {
+        if id == "" {
+            return Err(Error::new(Kind::EmptyId));
+        }
+
+        let req = GetInstitutionByIdRequest {
+            institution_id: id,
+            public_key: self.public_key,
+            options,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/institutions/get_by_id", &json_body))
     }
 }
