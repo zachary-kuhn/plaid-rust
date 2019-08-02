@@ -1,9 +1,8 @@
 use crate::plaid::{Client, Error, Kind};
 use chrono::{DateTime, Utc};
-use serde::Deserialize;
 use serde::*;
 
-pub trait Institutions<'a> {
+pub trait Institutions {
     fn get_institutions(&self, count: u16, offset: u32) -> Result<GetInstitutionsResponse, Error>;
     fn get_institutions_with_options(
         &self,
@@ -144,7 +143,7 @@ pub struct SearchInstitutionsResponse {
     institutions: Vec<Institution>,
 }
 
-impl<'a> Institutions<'a> for Client<'a> {
+impl<'a> Institutions for Client<'a> {
     fn get_institutions(&self, count: u16, offset: u32) -> Result<GetInstitutionsResponse, Error> {
         self.get_institutions_with_options(count, offset, None)
     }

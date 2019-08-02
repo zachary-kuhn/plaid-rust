@@ -42,6 +42,7 @@ pub(crate) enum Kind {
     EmptyId,
     EmptyQuery,
     EmptyToken,
+    ValidationError(&'static str),
 }
 
 pub struct Client<'a> {
