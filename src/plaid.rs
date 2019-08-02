@@ -38,8 +38,10 @@ struct Inner {
 pub(crate) enum Kind {
     Reqwest(::reqwest::Error),
     Json(::serde_json::Error),
-    EmptyToken,
+
     EmptyId,
+    EmptyQuery,
+    EmptyToken,
 }
 
 pub struct Client<'a> {
