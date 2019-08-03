@@ -9,6 +9,10 @@ trait Items {
         access_token: &str,
         webhook: &str,
     ) -> Result<UpdateItemWebhookResponse, Error>;
+    fn invalidate_access_token(
+        &self,
+        access_token: &str,
+    ) -> Result<InvalidateAccessTokenResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -59,6 +63,19 @@ struct UpdateItemWebhookRequest<'a> {
 pub struct UpdateItemWebhookResponse {
     response_id: String,
     item: Item,
+}
+
+#[derive(Serialize)]
+struct InvalidateAccessTokenRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    access_token: &'a str,
+}
+
+#[derive(Deserialize)]
+pub struct InvalidateAccessTokenResponse {
+    response_id: String,
+    new_access_token: String,
 }
 
 impl<'a> Items for Client<'a> {
@@ -115,5 +132,24 @@ impl<'a> Items for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/item/webhook/update", &json_body))
+    }
+
+    fn invalidate_access_token(
+        &self,
+        access_token: &str,
+    ) -> Result<InvalidateAccessTokenResponse, Error> {
+        if access_token == "" {
+            return Err(Error::new(Kind::EmptyToken));
+        }
+
+        let req = InvalidateAccessTokenRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            access_token,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/item/access_token/invalidate", &json_body))
     }
 }
