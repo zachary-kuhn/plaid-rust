@@ -13,6 +13,10 @@ trait Items {
         &self,
         access_token: &str,
     ) -> Result<InvalidateAccessTokenResponse, Error>;
+    fn update_access_token_version(
+        &self,
+        access_token: &str,
+    ) -> Result<UpdateAccessTokenVersionResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -76,6 +80,21 @@ struct InvalidateAccessTokenRequest<'a> {
 pub struct InvalidateAccessTokenResponse {
     response_id: String,
     new_access_token: String,
+}
+
+#[derive(Serialize)]
+struct UpdateAccessTokenVersionRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    #[serde(rename = "access_token_v1")]
+    access_token: &'a str,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateAccessTokenVersionResponse {
+    response_id: String,
+    access_token: String,
+    item_id: String,
 }
 
 impl<'a> Items for Client<'a> {
@@ -151,5 +170,24 @@ impl<'a> Items for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/item/access_token/invalidate", &json_body))
+    }
+
+    fn update_access_token_version(
+        &self,
+        access_token: &str,
+    ) -> Result<UpdateAccessTokenVersionResponse, Error> {
+        if access_token == "" {
+            return Err(Error::new(Kind::EmptyToken));
+        }
+
+        let req = UpdateAccessTokenVersionRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            access_token,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/item/access_token/update_version", &json_body))
     }
 }
