@@ -8,6 +8,12 @@ trait Accounts {
         access_token: &str,
         options: Option<GetAccountsRequestOptions>,
     ) -> Result<GetAccountsResponse, Error>;
+    fn get_balances(&self, access_token: &str) -> Result<GetBalancesResponse, Error>;
+    fn get_balances_with_options(
+        &self,
+        access_token: &str,
+        options: Option<GetBalancesRequestOptions>,
+    ) -> Result<GetBalancesResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -53,6 +59,27 @@ pub struct GetAccountsResponse {
     accounts: Vec<Account>,
 }
 
+#[derive(Serialize)]
+struct GetBalancesRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    access_token: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    options: Option<GetBalancesRequestOptions>,
+}
+
+#[derive(Serialize)]
+struct GetBalancesRequestOptions {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    account_ids: Option<Vec<String>>,
+}
+
+#[derive(Deserialize)]
+pub struct GetBalancesResponse {
+    response_id: String,
+    accounts: Vec<Account>,
+}
+
 impl<'a> Accounts for Client<'a> {
     fn get_accounts(&self, access_token: &str) -> Result<GetAccountsResponse, Error> {
         self.get_accounts_with_options(access_token, None)
@@ -77,5 +104,30 @@ impl<'a> Accounts for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/accounts/get", &json_body))
+    }
+
+    fn get_balances(&self, access_token: &str) -> Result<GetBalancesResponse, Error> {
+        self.get_balances_with_options(access_token, None)
+    }
+
+    fn get_balances_with_options(
+        &self,
+        access_token: &str,
+        options: Option<GetBalancesRequestOptions>,
+    ) -> Result<GetBalancesResponse, Error> {
+        if access_token == "" {
+            return Err(Error::new(Kind::EmptyToken));
+        }
+
+        let req = GetBalancesRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            access_token,
+            options,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/accounts/balance/get", &json_body))
     }
 }
