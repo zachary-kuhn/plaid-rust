@@ -17,7 +17,7 @@ trait Accounts {
 }
 
 #[derive(Deserialize)]
-struct Account {
+pub struct Account {
     account_id: String,
     balances: AccountBalances,
     mask: String,
