@@ -4,6 +4,11 @@ use serde::*;
 trait Items {
     fn get_item(&self, access_token: &str) -> Result<GetItemResponse, Error>;
     fn remove_item(&self, access_token: &str) -> Result<RemoveItemResponse, Error>;
+    fn update_item_webhook(
+        &self,
+        access_token: &str,
+        webhook: &str,
+    ) -> Result<UpdateItemWebhookResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -42,6 +47,20 @@ pub struct RemoveItemResponse {
     removed: bool,
 }
 
+#[derive(Serialize)]
+struct UpdateItemWebhookRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    access_token: &'a str,
+    webhook: &'a str,
+}
+
+#[derive(Deserialize)]
+pub struct UpdateItemWebhookResponse {
+    response_id: String,
+    item: Item,
+}
+
 impl<'a> Items for Client<'a> {
     fn get_item(&self, access_token: &str) -> Result<GetItemResponse, Error> {
         if access_token == "" {
@@ -73,5 +92,28 @@ impl<'a> Items for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/item/remove", &json_body))
+    }
+
+    fn update_item_webhook(
+        &self,
+        access_token: &str,
+        webhook: &str,
+    ) -> Result<UpdateItemWebhookResponse, Error> {
+        if access_token == "" || webhook == "" {
+            return Err(Error::new(Kind::ValidationError(
+                "access token and webhook must be specified",
+            )));
+        }
+
+        let req = UpdateItemWebhookRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            access_token,
+            webhook,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/item/webhook/update", &json_body))
     }
 }
