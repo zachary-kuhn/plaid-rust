@@ -18,6 +18,10 @@ trait Items {
         access_token: &str,
     ) -> Result<UpdateAccessTokenVersionResponse, Error>;
     fn create_public_token(&self, access_token: &str) -> Result<CreatePublicTokenResponse, Error>;
+    fn exchange_public_token(
+        &self,
+        public_token: &str,
+    ) -> Result<ExchangePublicTokenResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -109,6 +113,20 @@ struct CreatePublicTokenRequest<'a> {
 pub struct CreatePublicTokenResponse {
     response_id: String,
     public_token: String,
+}
+
+#[derive(Serialize)]
+struct ExchangePublicTokenRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    public_token: &'a str,
+}
+
+#[derive(Deserialize)]
+pub struct ExchangePublicTokenResponse {
+    response_id: String,
+    access_token: String,
+    item_id: String,
 }
 
 impl<'a> Items for Client<'a> {
@@ -219,5 +237,24 @@ impl<'a> Items for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/item/public_token/create", &json_body))
+    }
+
+    fn exchange_public_token(
+        &self,
+        public_token: &str,
+    ) -> Result<ExchangePublicTokenResponse, Error> {
+        if public_token == "" {
+            return Err(Error::new(Kind::EmptyToken));
+        }
+
+        let req = ExchangePublicTokenRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            public_token,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/item/public_token/exchange", &json_body))
     }
 }
