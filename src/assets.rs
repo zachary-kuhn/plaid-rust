@@ -4,6 +4,11 @@ use serde::*;
 
 trait Assets {
     fn get_asset_report(&self, asset_report_token: &str) -> Result<GetAssetReportResponse, Error>;
+    fn create_audit_copy(
+        &self,
+        asset_report_token: &str,
+        auditor_id: &str,
+    ) -> Result<CreateAuditCopyTokenResponse, Error>;
     fn remove_asset_report(
         &self,
         asset_report_token: &str,
@@ -55,6 +60,20 @@ pub struct GetAssetReportResponse {
 }
 
 #[derive(Serialize)]
+struct CreateAuditCopyRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    asset_report_token: &'a str,
+    auditor_id: &'a str,
+}
+
+#[derive(Deserialize)]
+pub struct CreateAuditCopyTokenResponse {
+    response_id: String,
+    audit_copy_token: String,
+}
+
+#[derive(Serialize)]
 struct RemoveAssetReportRequest<'a> {
     client_id: &'a str,
     secret: &'a str,
@@ -82,6 +101,29 @@ impl<'a> Assets for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/asset_report/get", &json_body))
+    }
+
+    fn create_audit_copy(
+        &self,
+        asset_report_token: &str,
+        auditor_id: &str,
+    ) -> Result<CreateAuditCopyTokenResponse, Error> {
+        if asset_report_token == "" || auditor_id == "" {
+            Err(Error::new(Kind::ValidationError(
+                "asset report token and auditor id must be specified",
+            )))?
+        }
+
+        let req = CreateAuditCopyRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            asset_report_token,
+            auditor_id,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/asset_report/audit_copy/create", &json_body))
     }
 
     fn remove_asset_report(
