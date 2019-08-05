@@ -4,6 +4,10 @@ use serde::*;
 
 trait Assets {
     fn get_asset_report(&self, asset_report_token: &str) -> Result<GetAssetReportResponse, Error>;
+    fn remove_asset_report(
+        &self,
+        asset_report_token: &str,
+    ) -> Result<RemoveAssetReportResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -50,6 +54,19 @@ pub struct GetAssetReportResponse {
     warnings: Vec<String>,
 }
 
+#[derive(Serialize)]
+struct RemoveAssetReportRequest<'a> {
+    client_id: &'a str,
+    secret: &'a str,
+    asset_report_token: &'a str,
+}
+
+#[derive(Deserialize)]
+pub struct RemoveAssetReportResponse {
+    response_id: String,
+    removed: bool,
+}
+
 impl<'a> Assets for Client<'a> {
     fn get_asset_report(&self, asset_report_token: &str) -> Result<GetAssetReportResponse, Error> {
         if asset_report_token == "" {
@@ -65,5 +82,24 @@ impl<'a> Assets for Client<'a> {
         serde_json::to_string(&req)
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/asset_report/get", &json_body))
+    }
+
+    fn remove_asset_report(
+        &self,
+        asset_report_token: &str,
+    ) -> Result<RemoveAssetReportResponse, Error> {
+        if asset_report_token == "" {
+            Err(Error::new(Kind::EmptyToken))?
+        }
+
+        let req = RemoveAssetReportRequest {
+            client_id: self.client_id,
+            secret: self.secret,
+            asset_report_token,
+        };
+
+        serde_json::to_string(&req)
+            .map_err(|err| Error::new(Kind::Json(err)))
+            .and_then(|json_body| self.call("/asset_report/remove", &json_body))
     }
 }
