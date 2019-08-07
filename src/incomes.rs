@@ -7,21 +7,21 @@ trait Incomes {
 
 #[derive(Deserialize)]
 pub struct Income {
-    income_streams: Vec<IncomeStream>,
-    last_year_income: i64,
-    last_year_income_before_tax: i64,
-    projected_yearly_income: i64,
-    projected_yearly_income_before_tax: i64,
-    max_number_of_overlapping_income_streams: i64,
-    number_of_income_streams: i64,
+    pub income_streams: Vec<IncomeStream>,
+    pub last_year_income: i64,
+    pub last_year_income_before_tax: i64,
+    pub projected_yearly_income: i64,
+    pub projected_yearly_income_before_tax: i64,
+    pub max_number_of_overlapping_income_streams: i64,
+    pub number_of_income_streams: i64,
 }
 
 #[derive(Deserialize)]
 pub struct IncomeStream {
-    confidence: f64,
-    days: i64,
-    monthly_income: i64,
-    name: String,
+    pub confidence: f64,
+    pub days: i64,
+    pub monthly_income: i64,
+    pub name: String,
 }
 
 #[derive(Serialize)]
@@ -33,8 +33,8 @@ struct GetIncomeRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetIncomeResponse {
-    response_id: String,
-    income: Income,
+    pub response_id: String,
+    pub income: Income,
 }
 
 impl<'a> Incomes for Client<'a> {

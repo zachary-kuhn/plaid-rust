@@ -30,45 +30,45 @@ pub trait Institutions {
 }
 
 #[derive(Debug, Deserialize)]
-struct Institution {
-    credentials: Vec<Credential>,
-    has_mfa: bool,
-    institution_id: String,
-    mfa: Vec<String>,
-    name: String,
-    products: Vec<String>,
-    country_codes: Vec<String>,
-    status: Option<InstitutionStatus>,
-    primary_color: Option<String>,
-    url: Option<String>,
-    logo: Option<String>,
+pub struct Institution {
+    pub credentials: Vec<Credential>,
+    pub has_mfa: bool,
+    pub institution_id: String,
+    pub mfa: Vec<String>,
+    pub name: String,
+    pub products: Vec<String>,
+    pub country_codes: Vec<String>,
+    pub status: Option<InstitutionStatus>,
+    pub primary_color: Option<String>,
+    pub url: Option<String>,
+    pub logo: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
-struct Credential {
-    label: String,
-    name: String,
+pub struct Credential {
+    pub label: String,
+    pub name: String,
     #[serde(rename = "type")]
-    credential_type: String,
+    pub credential_type: String,
 }
 
 #[derive(Debug, Deserialize)]
-struct InstitutionStatus {
-    item_logins: ItemLogins,
+pub struct InstitutionStatus {
+    pub item_logins: ItemLogins,
 }
 
 #[derive(Debug, Deserialize)]
-struct ItemLogins {
-    status: String,
-    last_status_change: DateTime<Utc>,
-    breakdown: InstitutionStatusBreakdown,
+pub struct ItemLogins {
+    pub status: String,
+    pub last_status_change: DateTime<Utc>,
+    pub breakdown: InstitutionStatusBreakdown,
 }
 
 #[derive(Debug, Deserialize)]
-struct InstitutionStatusBreakdown {
-    success: f64,
-    error_plaid: f64,
-    error_institution: f64,
+pub struct InstitutionStatusBreakdown {
+    pub success: f64,
+    pub error_plaid: f64,
+    pub error_institution: f64,
 }
 
 #[derive(Serialize)]
@@ -93,9 +93,9 @@ pub struct GetInstitutionsRequestOptions<'a> {
 
 #[derive(Debug, Deserialize)]
 pub struct GetInstitutionsResponse {
-    request_id: String,
-    institutions: Vec<Institution>,
-    total: u32,
+    pub request_id: String,
+    pub institutions: Vec<Institution>,
+    pub total: u32,
 }
 
 #[derive(Serialize)]
@@ -116,8 +116,8 @@ pub struct GetInstitutionByIdRequestOptions {
 
 #[derive(Deserialize)]
 pub struct GetInstitutionByIdResponse {
-    request_id: String,
-    institution: Institution,
+    pub request_id: String,
+    pub institution: Institution,
 }
 
 #[derive(Serialize)]
@@ -139,8 +139,8 @@ pub struct SearchInstitutionsRequestOptions<'a> {
 
 #[derive(Deserialize)]
 pub struct SearchInstitutionsResponse {
-    request_id: String,
-    institutions: Vec<Institution>,
+    pub request_id: String,
+    pub institutions: Vec<Institution>,
 }
 
 impl<'a> Institutions for Client<'a> {

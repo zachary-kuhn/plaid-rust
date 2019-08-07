@@ -21,45 +21,45 @@ trait Transactions {
 
 #[derive(Deserialize)]
 pub struct Transaction {
-    account_id: String,
-    amount: f64,
-    iso_currency_code: String,
-    unofficial_currency_code: String,
-    category: Vec<String>,
-    category_id: String,
-    date: String,
-    location: Location,
-    name: String,
-    payment_meta: PaymentMeta,
-    pending: bool,
-    pending_transaction_id: String,
-    account_owner: String,
-    transaction_id: String,
-    transaction_type: String,
+    pub account_id: String,
+    pub amount: f64,
+    pub iso_currency_code: String,
+    pub unofficial_currency_code: String,
+    pub category: Vec<String>,
+    pub category_id: String,
+    pub date: String,
+    pub location: Location,
+    pub name: String,
+    pub payment_meta: PaymentMeta,
+    pub pending: bool,
+    pub pending_transaction_id: String,
+    pub account_owner: String,
+    pub transaction_id: String,
+    pub transaction_type: String,
 }
 
 #[derive(Deserialize)]
 pub struct Location {
-    address: String,
-    city: String,
-    lat: f64,
-    lon: f64,
-    region: String,
-    store_number: String,
-    postal_code: String,
-    country: String,
+    pub address: String,
+    pub city: String,
+    pub lat: f64,
+    pub lon: f64,
+    pub region: String,
+    pub store_number: String,
+    pub postal_code: String,
+    pub country: String,
 }
 
 #[derive(Deserialize)]
 pub struct PaymentMeta {
-    by_order_of: String,
-    payee: String,
-    payer: String,
-    payment_method: String,
-    payment_processor: String,
-    ppd_id: String,
-    reason: String,
-    reference_number: String,
+    pub by_order_of: String,
+    pub payee: String,
+    pub payer: String,
+    pub payment_method: String,
+    pub payment_processor: String,
+    pub ppd_id: String,
+    pub reason: String,
+    pub reference_number: String,
 }
 
 #[derive(Serialize)]
@@ -85,11 +85,11 @@ struct GetTransactionsRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetTransactionsResponse {
-    response_id: String,
-    accounts: Vec<Account>,
-    item: Item,
-    transactions: Vec<Transaction>,
-    total_transactions: i64,
+    pub response_id: String,
+    pub accounts: Vec<Account>,
+    pub item: Item,
+    pub transactions: Vec<Transaction>,
+    pub total_transactions: i64,
 }
 
 impl<'a> Transactions for Client<'a> {

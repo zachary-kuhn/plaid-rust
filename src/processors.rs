@@ -29,8 +29,8 @@ struct CreateApexTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateApexTokenResponse {
-    response_id: String,
-    processor_token: String,
+    pub response_id: String,
+    pub processor_token: String,
 }
 
 #[derive(Serialize)]
@@ -43,8 +43,8 @@ struct CreateDwollaTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateDwollaTokenResponse {
-    response_id: String,
-    processor_token: String,
+    pub response_id: String,
+    pub processor_token: String,
 }
 
 #[derive(Serialize)]
@@ -57,8 +57,8 @@ struct CreateStripeTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateStripeTokenResponse {
-    response_id: String,
-    stripe_bank_account_token: String,
+    pub response_id: String,
+    pub stripe_bank_account_token: String,
 }
 
 impl<'a> Processors for Client<'a> {

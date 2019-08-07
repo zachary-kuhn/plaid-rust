@@ -11,23 +11,23 @@ pub trait Auth<'a> {
 }
 
 #[derive(Serialize)]
-pub struct GetAuthRequestOptions {
-    account_ids: Vec<String>,
-}
-
-#[derive(Serialize)]
-pub struct GetAuthRequest<'a> {
+struct GetAuthRequest<'a> {
     client_id: &'a str,
     secret: &'a str,
     access_token: &'a str,
     options: GetAuthRequestOptions,
 }
 
+#[derive(Serialize)]
+pub struct GetAuthRequestOptions {
+    account_ids: Vec<String>,
+}
+
 #[derive(Deserialize)]
 pub struct GetAuthResponse {
-    request_id: String,
-    accounts: Vec<String>,
-    numbers: Vec<String>,
+    pub request_id: String,
+    pub accounts: Vec<String>,
+    pub numbers: Vec<String>,
 }
 
 impl<'a> Auth<'a> for Client<'a> {

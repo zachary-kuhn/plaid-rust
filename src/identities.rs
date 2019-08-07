@@ -9,41 +9,41 @@ trait Identities {
 
 #[derive(Deserialize)]
 pub struct Identity {
-    addresses: Vec<Address>,
-    emails: Vec<Email>,
-    names: Vec<String>,
-    phone_numbers: Vec<PhoneNumber>,
+    pub addresses: Vec<Address>,
+    pub emails: Vec<Email>,
+    pub names: Vec<String>,
+    pub phone_numbers: Vec<PhoneNumber>,
 }
 
 #[derive(Deserialize)]
 pub struct Address {
-    data: AddressData,
-    primary: bool,
+    pub data: AddressData,
+    pub primary: bool,
 }
 
 #[derive(Deserialize)]
 pub struct AddressData {
-    city: String,
-    region: String,
-    street: String,
-    postal_code: String,
-    country: String,
+    pub city: String,
+    pub region: String,
+    pub street: String,
+    pub postal_code: String,
+    pub country: String,
 }
 
 #[derive(Deserialize)]
 pub struct Email {
-    data: String,
-    primary: bool,
+    pub data: String,
+    pub primary: bool,
     #[serde(rename = "type")]
-    email_type: String,
+    pub email_type: String,
 }
 
 #[derive(Deserialize)]
 pub struct PhoneNumber {
-    data: String,
-    primary: bool,
+    pub data: String,
+    pub primary: bool,
     #[serde(rename = "type")]
-    phone_number_type: String,
+    pub phone_number_type: String,
 }
 
 #[derive(Serialize)]
@@ -55,16 +55,16 @@ struct GetIdentityRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct AccountWithOwners {
-    owners: Vec<Identity>,
+    pub owners: Vec<Identity>,
     #[serde(flatten)]
-    account: Account,
+    pub account: Account,
 }
 
 #[derive(Deserialize)]
 pub struct GetIdentityResponse {
-    response_id: String,
-    accounts: Vec<AccountWithOwners>,
-    item: Item,
+    pub response_id: String,
+    pub accounts: Vec<AccountWithOwners>,
+    pub item: Item,
 }
 
 impl<'a> Identities for Client<'a> {

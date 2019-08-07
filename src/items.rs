@@ -26,12 +26,12 @@ trait Items {
 
 #[derive(Deserialize)]
 pub struct Item {
-    available_products: Vec<String>,
-    billed_products: Vec<String>,
-    error: String,
-    institution_id: String,
-    item_id: String,
-    webhook: String,
+    pub available_products: Vec<String>,
+    pub billed_products: Vec<String>,
+    pub error: String,
+    pub institution_id: String,
+    pub item_id: String,
+    pub webhook: String,
 }
 
 #[derive(Serialize)]
@@ -43,8 +43,8 @@ struct GetItemRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetItemResponse {
-    response_id: String,
-    item: Item,
+    pub response_id: String,
+    pub item: Item,
 }
 
 #[derive(Serialize)]
@@ -56,8 +56,8 @@ struct RemoveItemRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct RemoveItemResponse {
-    response_id: String,
-    removed: bool,
+    pub response_id: String,
+    pub removed: bool,
 }
 
 #[derive(Serialize)]
@@ -70,8 +70,8 @@ struct UpdateItemWebhookRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct UpdateItemWebhookResponse {
-    response_id: String,
-    item: Item,
+    pub response_id: String,
+    pub item: Item,
 }
 
 #[derive(Serialize)]
@@ -83,8 +83,8 @@ struct InvalidateAccessTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct InvalidateAccessTokenResponse {
-    response_id: String,
-    new_access_token: String,
+    pub response_id: String,
+    pub new_access_token: String,
 }
 
 #[derive(Serialize)]
@@ -97,9 +97,9 @@ struct UpdateAccessTokenVersionRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct UpdateAccessTokenVersionResponse {
-    response_id: String,
-    access_token: String,
-    item_id: String,
+    pub response_id: String,
+    pub access_token: String,
+    pub item_id: String,
 }
 
 #[derive(Serialize)]
@@ -111,8 +111,8 @@ struct CreatePublicTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreatePublicTokenResponse {
-    response_id: String,
-    public_token: String,
+    pub response_id: String,
+    pub public_token: String,
 }
 
 #[derive(Serialize)]
@@ -124,9 +124,9 @@ struct ExchangePublicTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct ExchangePublicTokenResponse {
-    response_id: String,
-    access_token: String,
-    item_id: String,
+    pub response_id: String,
+    pub access_token: String,
+    pub item_id: String,
 }
 
 impl<'a> Items for Client<'a> {

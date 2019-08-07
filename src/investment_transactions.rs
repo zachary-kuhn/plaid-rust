@@ -22,20 +22,20 @@ trait InvestmentTransactions {
 
 #[derive(Deserialize)]
 pub struct InvestmentTransaction {
-    investment_transaction_id: String,
-    account_id: String,
-    security_id: String,
-    cancel_transaction_id: String,
-    date: String,
-    name: String,
-    quantity: f64,
-    amount: f64,
-    price: f64,
-    fees: f64,
+    pub investment_transaction_id: String,
+    pub account_id: String,
+    pub security_id: String,
+    pub cancel_transaction_id: String,
+    pub date: String,
+    pub name: String,
+    pub quantity: f64,
+    pub amount: f64,
+    pub price: f64,
+    pub fees: f64,
     #[serde(rename = "type")]
-    investment_transaction_type: String,
-    iso_currency_code: String,
-    unofficial_currency_code: String,
+    pub investment_transaction_type: String,
+    pub iso_currency_code: String,
+    pub unofficial_currency_code: String,
 }
 
 #[derive(Serialize)]
@@ -58,12 +58,12 @@ struct GetInvestmentTransactionsRequestOptions<'a> {
 
 #[derive(Deserialize)]
 pub struct GetInvestmentTransactionsResponse {
-    response_id: String,
-    item: Item,
-    accounts: Vec<Account>,
-    investment_transactions: Vec<InvestmentTransaction>,
-    securities: Vec<Security>,
-    total_investment_transactions: i64,
+    pub response_id: String,
+    pub item: Item,
+    pub accounts: Vec<Account>,
+    pub investment_transactions: Vec<InvestmentTransaction>,
+    pub securities: Vec<Security>,
+    pub total_investment_transactions: i64,
 }
 
 impl<'a> InvestmentTransactions for Client<'a> {

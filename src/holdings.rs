@@ -9,35 +9,35 @@ trait Holdings {
 
 #[derive(Deserialize)]
 pub struct Security {
-    security_id: String,
-    cusip: String,
-    sedol: String,
-    isin: String,
-    institution_security_id: String,
-    institution_id: String,
-    proxy_security_id: String,
-    name: String,
-    ticker_symbol: String,
-    is_cash_equivalent: bool,
+    pub security_id: String,
+    pub cusip: String,
+    pub sedol: String,
+    pub isin: String,
+    pub institution_security_id: String,
+    pub institution_id: String,
+    pub proxy_security_id: String,
+    pub name: String,
+    pub ticker_symbol: String,
+    pub is_cash_equivalent: bool,
     #[serde(rename = "type")]
-    security_type: String,
-    close_price: f64,
-    close_price_as_of: String,
-    iso_currency_code: String,
-    unofficial_currency_code: String,
+    pub security_type: String,
+    pub close_price: f64,
+    pub close_price_as_of: String,
+    pub iso_currency_code: String,
+    pub unofficial_currency_code: String,
 }
 
 #[derive(Deserialize)]
 pub struct Holding {
-    account_id: String,
-    security_id: String,
-    institution_value: f64,
-    institution_price: f64,
-    quantity: f64,
-    institution_price_as_of: String,
-    cost_basis: f64,
-    iso_currency_code: String,
-    unofficial_currency_code: String,
+    pub account_id: String,
+    pub security_id: String,
+    pub institution_value: f64,
+    pub institution_price: f64,
+    pub quantity: f64,
+    pub institution_price_as_of: String,
+    pub cost_basis: f64,
+    pub iso_currency_code: String,
+    pub unofficial_currency_code: String,
 }
 
 #[derive(Serialize)]
@@ -49,11 +49,11 @@ struct GetHoldingsRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetHoldingsResponse {
-    response_id: String,
-    accounts: Vec<Account>,
-    item: Item,
-    securities: Vec<Security>,
-    holdings: Vec<Holding>,
+    pub response_id: String,
+    pub accounts: Vec<Account>,
+    pub item: Item,
+    pub securities: Vec<Security>,
+    pub holdings: Vec<Holding>,
 }
 
 impl<'a> Holdings for Client<'a> {

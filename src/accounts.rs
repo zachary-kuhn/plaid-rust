@@ -18,24 +18,24 @@ trait Accounts {
 
 #[derive(Deserialize)]
 pub struct Account {
-    account_id: String,
-    balances: AccountBalances,
-    mask: String,
-    name: String,
-    official_name: String,
-    subtype: String,
+    pub account_id: String,
+    pub balances: AccountBalances,
+    pub mask: String,
+    pub name: String,
+    pub official_name: String,
+    pub subtype: String,
     #[serde(rename = "type")]
-    account_type: String,
-    verification_status: String,
+    pub account_type: String,
+    pub verification_status: String,
 }
 
 #[derive(Deserialize)]
-struct AccountBalances {
-    available: f64,
-    current: f64,
-    limit: f64,
-    iso_currency_code: String,
-    unofficial_currency_code: String,
+pub struct AccountBalances {
+    pub available: f64,
+    pub current: f64,
+    pub limit: f64,
+    pub iso_currency_code: String,
+    pub unofficial_currency_code: String,
 }
 
 #[derive(Serialize)]
@@ -55,8 +55,8 @@ struct GetAccountsRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetAccountsResponse {
-    response_id: String,
-    accounts: Vec<Account>,
+    pub response_id: String,
+    pub accounts: Vec<Account>,
 }
 
 #[derive(Serialize)]
@@ -76,8 +76,8 @@ struct GetBalancesRequestOptions {
 
 #[derive(Deserialize)]
 pub struct GetBalancesResponse {
-    response_id: String,
-    accounts: Vec<Account>,
+    pub response_id: String,
+    pub accounts: Vec<Account>,
 }
 
 impl<'a> Accounts for Client<'a> {

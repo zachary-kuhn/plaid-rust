@@ -19,8 +19,8 @@ struct CreateSandboxPublicTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateSandboxPublicTokenResponse {
-    response_id: String,
-    public_token: String,
+    pub response_id: String,
+    pub public_token: String,
 }
 
 #[derive(Serialize)]
@@ -32,8 +32,8 @@ struct ResetSandboxItemRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct ResetSandboxItemResponse {
-    response_id: String,
-    reset_login: bool,
+    pub response_id: String,
+    pub reset_login: bool,
 }
 
 impl<'a> Sandbox for Client<'a> {

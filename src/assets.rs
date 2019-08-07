@@ -17,32 +17,32 @@ trait Assets {
 
 #[derive(Deserialize)]
 pub struct AssetReport {
-    asset_report_id: String,
-    client_report_id: String,
-    date_generated: String,
-    days_requested: i64,
-    items: Vec<AssetReportItem>,
-    user: AssetReportUser,
+    pub asset_report_id: String,
+    pub client_report_id: String,
+    pub date_generated: String,
+    pub days_requested: i64,
+    pub items: Vec<AssetReportItem>,
+    pub user: AssetReportUser,
 }
 
 #[derive(Deserialize)]
 pub struct AssetReportItem {
-    accounts: Vec<Account>,
-    date_last_updated: String,
-    institution_id: String,
-    institution_name: String,
-    item_id: String,
+    pub accounts: Vec<Account>,
+    pub date_last_updated: String,
+    pub institution_id: String,
+    pub institution_name: String,
+    pub item_id: String,
 }
 
 #[derive(Deserialize)]
 pub struct AssetReportUser {
-    client_user_id: String,
-    email: String,
-    first_name: String,
-    last_name: String,
-    middle_name: String,
-    phone_number: String,
-    ssn: String,
+    pub client_user_id: String,
+    pub email: String,
+    pub first_name: String,
+    pub last_name: String,
+    pub middle_name: String,
+    pub phone_number: String,
+    pub ssn: String,
 }
 
 #[derive(Serialize)]
@@ -54,9 +54,9 @@ struct GetAssetReportRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetAssetReportResponse {
-    response_id: String,
-    report: AssetReport,
-    warnings: Vec<String>,
+    pub response_id: String,
+    pub report: AssetReport,
+    pub warnings: Vec<String>,
 }
 
 #[derive(Serialize)]
@@ -69,8 +69,8 @@ struct CreateAuditCopyRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateAuditCopyTokenResponse {
-    response_id: String,
-    audit_copy_token: String,
+    pub response_id: String,
+    pub audit_copy_token: String,
 }
 
 #[derive(Serialize)]
@@ -82,8 +82,8 @@ struct RemoveAssetReportRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct RemoveAssetReportResponse {
-    response_id: String,
-    removed: bool,
+    pub response_id: String,
+    pub removed: bool,
 }
 
 impl<'a> Assets for Client<'a> {
