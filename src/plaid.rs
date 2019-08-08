@@ -1,49 +1,6 @@
+use crate::environments::Environment;
+use crate::errors::{Error, Kind};
 use reqwest::Request;
-
-pub enum Environment {
-    SANDBOX,
-    DEVELOPMENT,
-    PRODUCTION,
-}
-
-impl Environment {
-    pub fn host(&self) -> &str {
-        match self {
-            Environment::SANDBOX => "sandbox.plaid.com",
-            Environment::DEVELOPMENT => "development.plaid.com",
-            Environment::PRODUCTION => "production.plaid.com",
-        }
-    }
-}
-
-#[derive(Debug)]
-pub struct Error {
-    inner: Box<Inner>,
-}
-
-impl Error {
-    pub(crate) fn new(kind: Kind) -> Error {
-        Error {
-            inner: Box::new(Inner { kind }),
-        }
-    }
-}
-
-#[derive(Debug)]
-struct Inner {
-    kind: Kind,
-}
-
-#[derive(Debug)]
-pub(crate) enum Kind {
-    Reqwest(::reqwest::Error),
-    Json(::serde_json::Error),
-
-    EmptyId,
-    EmptyQuery,
-    EmptyToken,
-    ValidationError(&'static str),
-}
 
 pub struct Client<'a> {
     pub client_id: &'a str,

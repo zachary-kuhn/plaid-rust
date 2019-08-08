@@ -1,7 +1,8 @@
 use crate::accounts::Account;
+use crate::errors::{Error, Kind};
 use crate::holdings::Security;
 use crate::items::Item;
-use crate::plaid::{Client, Error, Kind};
+use crate::plaid::Client;
 use serde::*;
 
 trait InvestmentTransactions {

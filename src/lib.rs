@@ -2,6 +2,8 @@ pub mod accounts;
 pub mod assets;
 pub mod auth;
 pub mod categories;
+pub mod environments;
+pub mod errors;
 pub mod holdings;
 pub mod identities;
 pub mod incomes;

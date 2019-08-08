@@ -1,4 +1,5 @@
-use crate::plaid::{Client, Error};
+use crate::errors::Error;
+use crate::plaid::Client;
 use serde::*;
 
 trait Categories {

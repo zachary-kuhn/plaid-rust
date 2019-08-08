@@ -1,4 +1,5 @@
-use crate::plaid::{Client, Error, Kind};
+use crate::errors::{Error, Kind};
+use crate::plaid::Client;
 use serde::{Deserialize, Serialize};
 
 pub trait Auth<'a> {
