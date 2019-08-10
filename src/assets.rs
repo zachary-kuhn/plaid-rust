@@ -55,7 +55,7 @@ struct GetAssetReportRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetAssetReportResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub report: AssetReport,
     pub warnings: Vec<String>,
 }
@@ -70,7 +70,7 @@ struct CreateAuditCopyRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateAuditCopyTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub audit_copy_token: String,
 }
 
@@ -83,7 +83,7 @@ struct RemoveAssetReportRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct RemoveAssetReportResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub removed: bool,
 }
 

@@ -59,7 +59,7 @@ struct GetInvestmentTransactionsRequestOptions<'a> {
 
 #[derive(Deserialize)]
 pub struct GetInvestmentTransactionsResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub item: Item,
     pub accounts: Vec<Account>,
     pub investment_transactions: Vec<InvestmentTransaction>,

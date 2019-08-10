@@ -50,7 +50,7 @@ struct GetHoldingsRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetHoldingsResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub accounts: Vec<Account>,
     pub item: Item,
     pub securities: Vec<Security>,

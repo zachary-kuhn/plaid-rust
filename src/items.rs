@@ -2,7 +2,7 @@ use crate::errors::{Error, Kind};
 use crate::plaid::Client;
 use serde::*;
 
-trait Items {
+pub trait Items {
     fn get_item(&self, access_token: &str) -> Result<GetItemResponse, Error>;
     fn remove_item(&self, access_token: &str) -> Result<RemoveItemResponse, Error>;
     fn update_item_webhook(
@@ -44,7 +44,7 @@ struct GetItemRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetItemResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub item: Item,
 }
 
@@ -57,7 +57,7 @@ struct RemoveItemRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct RemoveItemResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub removed: bool,
 }
 
@@ -71,7 +71,7 @@ struct UpdateItemWebhookRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct UpdateItemWebhookResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub item: Item,
 }
 
@@ -84,7 +84,7 @@ struct InvalidateAccessTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct InvalidateAccessTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub new_access_token: String,
 }
 
@@ -98,7 +98,7 @@ struct UpdateAccessTokenVersionRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct UpdateAccessTokenVersionResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub access_token: String,
     pub item_id: String,
 }
@@ -112,7 +112,7 @@ struct CreatePublicTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreatePublicTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub public_token: String,
 }
 
@@ -125,7 +125,7 @@ struct ExchangePublicTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct ExchangePublicTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub access_token: String,
     pub item_id: String,
 }

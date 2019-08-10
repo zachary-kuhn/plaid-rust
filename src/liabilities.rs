@@ -95,7 +95,7 @@ struct GetLiabilitiesRequest<'a> {
 // GetLiabilitiesResponse is the response from /liabilities/get.
 #[derive(Deserialize)]
 pub struct GetLiabilitiesResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub accounts: Vec<Account>,
     pub item: Item,
     pub liabilities: LiabilityAccounts,

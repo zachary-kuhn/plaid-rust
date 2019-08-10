@@ -15,7 +15,7 @@ pub struct Category {
 
 #[derive(Deserialize)]
 pub struct GetCategoriesResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub categories: Vec<Category>,
 }
 

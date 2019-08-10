@@ -30,7 +30,7 @@ struct CreateApexTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateApexTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub processor_token: String,
 }
 
@@ -44,7 +44,7 @@ struct CreateDwollaTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateDwollaTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub processor_token: String,
 }
 
@@ -58,7 +58,7 @@ struct CreateStripeTokenRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct CreateStripeTokenResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub stripe_bank_account_token: String,
 }
 

@@ -63,7 +63,7 @@ pub struct AccountWithOwners {
 
 #[derive(Deserialize)]
 pub struct GetIdentityResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub accounts: Vec<AccountWithOwners>,
     pub item: Item,
 }

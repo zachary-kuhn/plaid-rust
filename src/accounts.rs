@@ -1,6 +1,7 @@
 use crate::errors::{Error, Kind};
 use crate::plaid::Client;
 use serde::*;
+use std::env;
 
 trait Accounts {
     fn get_accounts(&self, access_token: &str) -> Result<GetAccountsResponse, Error>;
@@ -23,20 +24,20 @@ pub struct Account {
     pub balances: AccountBalances,
     pub mask: String,
     pub name: String,
-    pub official_name: String,
+    pub official_name: Option<String>,
     pub subtype: String,
     #[serde(rename = "type")]
     pub account_type: String,
-    pub verification_status: String,
+    pub verification_status: Option<String>,
 }
 
 #[derive(Deserialize)]
 pub struct AccountBalances {
-    pub available: f64,
+    pub available: Option<f64>,
     pub current: f64,
-    pub limit: f64,
+    pub limit: Option<f64>,
     pub iso_currency_code: String,
-    pub unofficial_currency_code: String,
+    pub unofficial_currency_code: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -56,7 +57,7 @@ struct GetAccountsRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetAccountsResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub accounts: Vec<Account>,
 }
 
@@ -77,7 +78,7 @@ struct GetBalancesRequestOptions {
 
 #[derive(Deserialize)]
 pub struct GetBalancesResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub accounts: Vec<Account>,
 }
 
@@ -131,4 +132,43 @@ impl<'a> Accounts for Client<'a> {
             .map_err(|err| Error::new(Kind::Json(err)))
             .and_then(|json_body| self.call("/accounts/balance/get", &json_body))
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::environments::Environment;
+    use crate::items::Items;
+    use crate::sandbox::Sandbox;
+
+    #[test]
+    fn test_get_accounts() {
+        let client_id = env::var("PLAID_CLIENT_ID").unwrap();
+        let secret = env::var("PLAID_SECRET").unwrap();
+        let public_key = env::var("PLAID_PUBLIC_KEY").unwrap();
+        let test_client = Client {
+            client_id: client_id.as_str(),
+            secret: secret.as_str(),
+            public_key: public_key.as_str(),
+            environment: Environment::SANDBOX,
+            http_client: reqwest::Client::new(),
+        };
+
+        let sandbox_resp = test_client
+            .create_sandbox_public_token(
+                "ins_109508",
+                &["auth", "identity", "income", "transactions"],
+            )
+            .unwrap();
+        let token_resp = test_client
+            .exchange_public_token(sandbox_resp.public_token.as_str())
+            .unwrap();
+
+        let accounts_resp = test_client
+            .get_accounts(token_resp.access_token.as_str())
+            .unwrap();
+
+        assert_eq!(8, accounts_resp.accounts.len())
+    }
+
 }

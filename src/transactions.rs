@@ -86,7 +86,7 @@ struct GetTransactionsRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetTransactionsResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub accounts: Vec<Account>,
     pub item: Item,
     pub transactions: Vec<Transaction>,

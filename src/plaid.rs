@@ -51,6 +51,10 @@ impl<'a> Client<'a> {
         self.http_client
             .execute(request)
             .map_err(|err| Error::new(Kind::Reqwest(err)))
-            .and_then(|res| serde_json::from_reader(res).map_err(|err| Error::new(Kind::Json(err))))
+            .and_then(|mut res| {
+                let text = res.text().unwrap();
+                println!("{:?}", text);
+                serde_json::from_str(text.as_str()).map_err(|err| Error::new(Kind::Json(err)))
+            })
     }
 }

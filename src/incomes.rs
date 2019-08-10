@@ -34,7 +34,7 @@ struct GetIncomeRequest<'a> {
 
 #[derive(Deserialize)]
 pub struct GetIncomeResponse {
-    pub response_id: String,
+    pub request_id: String,
     pub income: Income,
 }
 
