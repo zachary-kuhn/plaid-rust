@@ -168,7 +168,17 @@ mod tests {
             .get_accounts(token_resp.access_token.as_str())
             .unwrap();
 
-        assert_eq!(8, accounts_resp.accounts.len())
-    }
+        assert_eq!(8, accounts_resp.accounts.len());
 
+        let filtered_accounts_resp = test_client
+            .get_accounts_with_options(
+                token_resp.access_token.as_str(),
+                Some(GetAccountsRequestOptions {
+                    account_ids: Some(vec![accounts_resp.accounts[0].account_id.as_str()]),
+                }),
+            )
+            .unwrap();
+
+        assert_eq!(1, filtered_accounts_resp.accounts.len());
+    }
 }
