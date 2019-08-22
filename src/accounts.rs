@@ -67,13 +67,13 @@ struct GetBalancesRequest<'a> {
     secret: &'a str,
     access_token: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
-    options: Option<GetBalancesRequestOptions>,
+    options: Option<GetBalancesRequestOptions<'a>>,
 }
 
 #[derive(Serialize)]
-struct GetBalancesRequestOptions {
+struct GetBalancesRequestOptions<'a> {
     #[serde(skip_serializing_if = "Option::is_none")]
-    account_ids: Option<Vec<String>>,
+    account_ids: Option<Vec<&'a str>>,
 }
 
 #[derive(Deserialize)]
@@ -180,5 +180,46 @@ mod tests {
             .unwrap();
 
         assert_eq!(1, filtered_accounts_resp.accounts.len());
+    }
+
+    #[test]
+    fn test_get_balances() {
+        let client_id = env::var("PLAID_CLIENT_ID").unwrap();
+        let secret = env::var("PLAID_SECRET").unwrap();
+        let public_key = env::var("PLAID_PUBLIC_KEY").unwrap();
+        let test_client = Client {
+            client_id: client_id.as_str(),
+            secret: secret.as_str(),
+            public_key: public_key.as_str(),
+            environment: Environment::SANDBOX,
+            http_client: reqwest::Client::new(),
+        };
+
+        let sandbox_resp = test_client
+            .create_sandbox_public_token(
+                "ins_109508",
+                &["auth", "identity", "income", "transactions"],
+            )
+            .unwrap();
+        let token_resp = test_client
+            .exchange_public_token(sandbox_resp.public_token.as_str())
+            .unwrap();
+
+        let balances_resp = test_client
+            .get_balances(token_resp.access_token.as_str())
+            .unwrap();
+
+        assert_eq!(8, balances_resp.accounts.len());
+
+        let filtered_balances_resp = test_client
+            .get_balances_with_options(
+                token_resp.access_token.as_str(),
+                Some(GetBalancesRequestOptions {
+                    account_ids: Some(vec![balances_resp.accounts[0].account_id.as_str()]),
+                }),
+            )
+            .unwrap();
+
+        assert_eq!(1, filtered_balances_resp.accounts.len());
     }
 }
