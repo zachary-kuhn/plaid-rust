@@ -1,7 +1,6 @@
 use crate::errors::{Error, Kind};
 use crate::plaid::Client;
 use serde::*;
-use std::env;
 
 trait Accounts {
     fn get_accounts(&self, access_token: &str) -> Result<GetAccountsResponse, Error>;
@@ -38,6 +37,36 @@ pub struct AccountBalances {
     pub limit: Option<f64>,
     pub iso_currency_code: String,
     pub unofficial_currency_code: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct ACHNumber {
+    pub account: String,
+    pub account_id: String,
+    pub routing: String,
+    pub wire_routing: String,
+}
+
+#[derive(Deserialize)]
+pub struct EFTNumber {
+    pub account: String,
+    pub account_id: String,
+    pub institution: String,
+    pub branch: String,
+}
+
+#[derive(Deserialize)]
+pub struct IBANNumber {
+    pub account_id: String,
+    pub iban: String,
+    pub bic: String,
+}
+
+#[derive(Deserialize)]
+pub struct BACSNumber {
+    pub account: String,
+    pub account_id: String,
+    pub sort_code: String,
 }
 
 #[derive(Serialize)]
@@ -140,6 +169,7 @@ mod tests {
     use crate::environments::Environment;
     use crate::items::Items;
     use crate::sandbox::Sandbox;
+    use std::env;
 
     #[test]
     fn test_get_accounts() {
