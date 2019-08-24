@@ -6,6 +6,11 @@ use serde::*;
 
 trait Holdings {
     fn get_holdings(&self, access_token: &str) -> Result<GetHoldingsResponse, Error>;
+    fn get_holdings_with_options(
+        &self,
+        access_token: &str,
+        options: Option<GetHoldingsRequestOptions>,
+    ) -> Result<GetHoldingsResponse, Error>;
 }
 
 #[derive(Deserialize)]
@@ -46,6 +51,14 @@ struct GetHoldingsRequest<'a> {
     client_id: &'a str,
     secret: &'a str,
     access_token: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    options: Option<GetHoldingsRequestOptions<'a>>,
+}
+
+#[derive(Serialize)]
+pub struct GetHoldingsRequestOptions<'a> {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    account_ids: Option<Vec<&'a str>>,
 }
 
 #[derive(Deserialize)]
@@ -59,6 +72,14 @@ pub struct GetHoldingsResponse {
 
 impl<'a> Holdings for Client<'a> {
     fn get_holdings(&self, access_token: &str) -> Result<GetHoldingsResponse, Error> {
+        self.get_holdings_with_options(access_token, None)
+    }
+
+    fn get_holdings_with_options(
+        &self,
+        access_token: &str,
+        options: Option<GetHoldingsRequestOptions>,
+    ) -> Result<GetHoldingsResponse, Error> {
         if access_token == "" {
             Err(Error::new(Kind::EmptyToken))?
         }
@@ -67,6 +88,7 @@ impl<'a> Holdings for Client<'a> {
             client_id: self.client_id,
             secret: self.secret,
             access_token,
+            options,
         };
 
         serde_json::to_string(&req)
@@ -103,8 +125,21 @@ mod tests {
             .exchange_public_token(sandbox_resp.public_token.as_str())
             .unwrap();
 
-        test_client
+        let holdings_resp = test_client
             .get_holdings(token_resp.access_token.as_str())
             .unwrap();
+
+        assert_eq!(8, holdings_resp.accounts.len());
+
+        let filtered_holdings_resp = test_client
+            .get_holdings_with_options(
+                token_resp.access_token.as_str(),
+                Some(GetHoldingsRequestOptions {
+                    account_ids: Some(vec![holdings_resp.accounts[0].account_id.as_str()]),
+                }),
+            )
+            .unwrap();
+
+        assert_eq!(1, filtered_holdings_resp.accounts.len());
     }
 }
