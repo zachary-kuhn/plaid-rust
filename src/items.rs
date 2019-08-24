@@ -29,10 +29,18 @@ pub trait Items {
 pub struct Item {
     pub available_products: Vec<String>,
     pub billed_products: Vec<String>,
-    pub error: String,
+    pub error: Option<ItemError>,
     pub institution_id: String,
     pub item_id: String,
-    pub webhook: String,
+    pub webhook: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct ItemError {
+    pub error_type: String,
+    pub error_code: String,
+    pub error_message: String,
+    pub display_message: Option<String>,
 }
 
 #[derive(Serialize)]
