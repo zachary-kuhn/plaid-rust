@@ -108,7 +108,10 @@ mod tests {
         };
 
         let sandbox_resp = test_client
-            .create_sandbox_public_token("ins_109508", &["investments"])
+            .create_sandbox_public_token(
+                "ins_109508",
+                &["auth", "identity", "income", "transactions"],
+            )
             .unwrap();
         let token_resp = test_client
             .exchange_public_token(sandbox_resp.public_token.as_str())
